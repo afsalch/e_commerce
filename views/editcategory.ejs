@@ -1,0 +1,141 @@
+<%- include('/project/views/layouts/header.ejs') %>
+
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add Category</h2>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="form">
+                            <input type="hidden" id="category_id" name="category_id" value="<%= category.category_name %>" />
+                            <div class="mb-4">
+                                <label for="category_name" class="form-label">Category Name</label>
+                                <input type="text" placeholder="Enter Category Name" class="form-control"
+                                    id="category_name" name="category_name" value="<%= category.category_name %>" required />
+                                <span id="category_name_error" class="error text-danger"></span>
+                            </div>
+                        
+                            
+                        
+                            <div class="mb-4">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea placeholder="Type here" id="notes" name="notes" class="form-control"
+                                    rows="4"><%= category.notes %></textarea>
+                                <span id="notes_error" class="error text-danger"></span>
+                            </div>
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                        </form>
+                        
+
+
+                    </div>
+                </div>
+                <!-- card end// -->
+
+            </div>
+
+        </div>
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script>
+        // Handle form submission
+        document.getElementById('form').addEventListener('submit', function (e) {
+            e.preventDefault(); 
+    
+            // Clear previous error messages
+            document.querySelectorAll('.error').forEach(span => span.innerHTML = '');
+    
+            let isValid = true; 
+    
+            // Validate category name
+            const categoryName = document.getElementById('category_name').value.trim();
+            if (categoryName === '') {
+                document.getElementById('category_name_error').innerHTML = 'Category name is required.';
+                isValid = false;
+            }
+    
+            if (isValid) {
+                // Gather form data
+                const formData = new FormData(this);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+    
+                // Send update request to server
+                fetch('/update_category', {  
+                    method: 'PUT', // Use POST method for form submission
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.success) {
+                        result.errors.forEach(error => {
+                            if (error.field) {
+                                document.getElementById(`${error.field}_error`).innerHTML = error.message;
+                            } else {
+                                // Handle general errors if needed
+                            }
+                        });
+                    } else {
+                        window.location.href = '/categorylist'; 
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                });
+            }
+        });
+    </script>
+    
+
+
+
+
+
+
+
+
+    </body>
+
+    </html>

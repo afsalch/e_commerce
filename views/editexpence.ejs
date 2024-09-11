@@ -1,0 +1,153 @@
+<%- include('/project/views/layouts/header.ejs') %>
+
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add Expence</h2>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="expense_form">
+                            <!-- Hidden input for expense ID -->
+                            <input type="hidden" id="existing_expence_name" name="existing_expence_name" value="<%= expense.expense_name %>">
+                        
+                            <div class="mb-4">
+                                <label for="expense_name" class="form-label">Expense Name</label>
+                                <input type="text" placeholder="Enter Expense Name" class="form-control"
+                                    id="expense_name" name="expense_name" value="<%= expense.expense_name %>" />
+                                <span id="expense_name_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <div class="mb-4">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea placeholder="Type here" id="notes" name="notes" class="form-control"
+                                    rows="4"><%= expense.notes %></textarea>
+                                <span id="notes_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                        </form>
+                        
+
+                    </div>
+                </div>
+                <!-- card end// -->
+
+            </div>
+
+        </div>
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+
+
+    <script>
+        document.getElementById('expense_form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent form submission for validation
+            let isValid = true;
+    
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(function (errorElement) {
+                errorElement.innerHTML = '';
+            });
+    
+            // Validate Expense Name
+            const expenseName = document.getElementById('expense_name').value.trim();
+            if (!expenseName) {
+                document.getElementById('expense_name_error').innerHTML = 'Expense name is required.';
+                isValid = false;
+            }
+    
+            // Validate Notes (Optional)
+            const notes = document.getElementById('notes').value.trim();
+    
+            if (isValid) {
+                // Prepare data for submission
+                const expenseData = {
+                    existing_expence_name: document.getElementById('existing_expence_name').value, // Include expense ID
+                    expense_name: expenseName,
+                    notes: notes
+                };
+    
+                // Send a request to update the expense
+                fetch('/update_expense', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(expenseData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '/expencelist';
+                        } else {
+                            // Display the error message returned from the server
+                            if (data.message === 'Expense name already exists.') {
+                                document.getElementById('expense_name_error').innerHTML = data.message;
+                            } else {
+                                alert('Error updating expense: ' + data.message);
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Error updating expense:', error));
+            }
+        });
+    </script>
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </body>
+
+    </html>

@@ -1,0 +1,163 @@
+
+<%- include('/project/views/layouts/header.ejs') %>
+
+<style>
+    .error {
+        color: red;
+    }
+</style>
+
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Edit Profile</h2>
+                            <div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Basic</h4>
+                            </div>
+                            <div class="card-body">
+                                <form id="form">
+                                    <div class="mb-4">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" placeholder="Enter staff name" class="form-control" id="name" name="name" value="<%= admin.user %>" />
+                                        <span id="name_error" class="error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" placeholder="Enter email" class="form-control" id="email" name="email" value="<%= admin.email %>" />
+                                        <span id="email_error" class="error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Phone</label>
+                                        <input type="text" placeholder="Enter Phone number" class="form-control" id="phone" name="phone" value="<%= admin.phone %>" />
+                                        <span id="phone_error" class="error"></span>
+                                    </div>
+                                    
+                                    <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        &copy; Nest - HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">All rights reserved</div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+        <script>
+            document.getElementById('form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                console.log('clicked');
+                
+            
+                // Clear previous errors
+                document.getElementById('name_error').textContent = '';
+                document.getElementById('email_error').textContent = '';
+                document.getElementById('phone_error').textContent = '';
+            
+                // Get form values
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+            
+                // Regex patterns
+                const emailRegex = /^[^\s@]+@gmail\.com$/;
+                const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                const phoneRegex = /^\d{10}$/;
+                const usernameRegex = /^[A-Za-z\s]+$/;
+            
+                // Basic validation
+                let hasError = false;
+                if (name === '') {
+                    document.getElementById('name_error').textContent = 'Name is required';
+                    hasError = true;
+                } else if (!usernameRegex.test(name)) {
+                    document.getElementById('name_error').textContent = 'Name can only contain letters and spaces';
+                    hasError = true;
+                }
+                if (email === '') {
+                    document.getElementById('email_error').textContent = 'Email is required';
+                    hasError = true;
+                } else if (!emailRegex.test(email)) {
+                    document.getElementById('email_error').textContent = 'Email must be a valid Gmail address';
+                    hasError = true;
+                }
+                if (phone === '') {
+                    document.getElementById('phone_error').textContent = 'Phone number is required';
+                    hasError = true;
+                } else if (!phoneRegex.test(phone)) {
+                    document.getElementById('phone_error').textContent = 'Phone number is invalid';
+                    hasError = true;
+                }
+               
+            
+                if (!hasError) {
+                    // Create a staff object
+                    const staff = {
+                        user: name,
+                        email: email,
+                        phone: phone
+                    };
+            
+                    // Use Fetch API to submit the form data
+                    fetch('/update_user', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(staff)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+
+                            if (data.error === "This Email already exists") {
+
+                                document.getElementById('email_error').textContent = data.error;
+                            } 
+                        } else if (data.message === "Staff successfully updated") {
+
+                            // Redirect to /stafflists
+                            window.location.href = '/dashboard';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        </script>
+        
+            
+            
+    </body>
+</html>

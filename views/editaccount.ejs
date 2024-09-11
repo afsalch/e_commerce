@@ -1,0 +1,202 @@
+
+<%- include('/project/views/layouts/header.ejs') %>
+
+<style>
+    .error {
+        color: red;
+    }
+</style>
+
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Edit Account</h2>
+                            <div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Basic</h4>
+                            </div>
+                            <div class="card-body">
+                                <form id="form">
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Account Name</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Enter Account name" 
+                                            class="form-control" 
+                                            id="acc_name" 
+                                            name="acc_name" 
+                                            value="<%= account.acc_name %>"  
+                                        />
+                                        <span id="acc_name_error" class="error"></span> 
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Account Number</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Enter Account number" 
+                                            class="form-control" 
+                                            id="acc_number" 
+                                            name="acc_number" 
+                                            value="<%= account.acc_number %>"  
+                                        />
+                                        <span id="acc_number_error" class="error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Opening balance</label>
+                                        <input 
+                                            placeholder="$" 
+                                            name="price" 
+                                            id="price" 
+                                            type="text" 
+                                            class="form-control" 
+                                            value="<%= account.price %>"  
+                                        />
+                                        <span class="error" id="price-error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Notes</label>
+                                        <textarea 
+                                            placeholder="Type here" 
+                                            id="notes" 
+                                            name="notes" 
+                                            class="form-control" 
+                                            rows="4"
+                                        ><%= account.notes %></textarea>  
+                                        <span class="error" id="notes-error"></span>
+                                    </div>
+                                    <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                                </form>
+                                
+                                
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        &copy; Nest - HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">All rights reserved</div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+        <script>
+            document.getElementById('form').addEventListener('submit', async function(event) {
+                event.preventDefault(); 
+                console.log('submit');
+        
+                // Reset error messages
+                document.getElementById('acc_name_error').innerText = '';
+                document.getElementById('acc_number_error').innerText = '';
+                document.getElementById('price-error').innerText = '';
+                document.getElementById('notes-error').innerText = '';
+        
+                // Get input values
+                const accName = document.getElementById('acc_name').value.trim();
+                const accNumber = document.getElementById('acc_number').value.trim();
+                const price = document.getElementById('price').value.trim();
+                const notes = document.getElementById('notes').value.trim();
+                
+                const accountId = '<%= account.id %>'; 
+                let isValid = true;
+        
+                // Account name regex (only letters and spaces)
+                const accountNameRegex = /^[a-zA-Z ]+$/;
+        
+                // Account number regex (only digits)
+                const accNumberRegex = /^[0-9]+$/;
+        
+                // Validation checks
+                if (accName === '') {
+                    document.getElementById('acc_name_error').innerText = 'Account name is required.';
+                    isValid = false;
+                } else if (!accountNameRegex.test(accName)) {
+                    document.getElementById('acc_name_error').innerText = 'Account name can only contain letters and spaces.';
+                    isValid = false;
+                }
+        
+                if (accNumber === '') {
+                    document.getElementById('acc_number_error').innerText = 'Account number is required.';
+                    isValid = false;
+                } else if (!accNumberRegex.test(accNumber)) {
+                    document.getElementById('acc_number_error').innerText = 'Account number must be numeric.';
+                    isValid = false;
+                }
+        
+                // Updated price validation
+                if (price === '' || isNaN(price) || parseFloat(price) <= 0) {
+                    document.getElementById('price-error').innerText = 'Please enter a valid price (greater than zero).';
+                    isValid = false; // Set validity to false if there's an error
+                }
+        
+                if (notes === '') {
+                    document.getElementById('notes-error').innerText = 'Notes cannot be empty.';
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    const data = {
+                        id: accountId,
+                        acc_name: accName,
+                        acc_number: accNumber,
+                        price: price,
+                        notes: notes
+                    };
+        
+                    try {
+                        const response = await fetch(`/update_account`, { // Use the appropriate endpoint for updating
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data),
+                        });
+        
+                        const result = await response.json();
+        
+                        if (response.ok) {
+                            // Handle success (e.g., redirect or show success message)
+                            window.location.href = '/accountlist';
+                        } else {
+                            // Handle error from the server
+                            console.error('Error:', result);
+                            alert('Error updating account: ' + result.message); // Adjust according to your error structure
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating the account. Please try again later.');
+                    }
+                }
+            });
+        </script>
+        
+        
+            
+            
+    </body>
+</html>

@@ -1,0 +1,203 @@
+<%- include('/project/views/layouts/header.ejs') %>
+
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add SubExpence</h2>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="form">
+                            <input type="hidden" class="form-control" id="subcategory_id" name="expense_id" value="<%= expense.id %>" />
+                        
+                            <div class="mb-4">
+                                <label for="subcategory_name" class="form-label">Sub Expense Name</label>
+                                <input type="text" placeholder="Enter Sub Expense Name" class="form-control" id="subcategory_name" name="subexpense_name" value="<%= expense.subexpense_name %>" />
+                                <span id="subcategory_name_error" class="error text-danger"></span>
+                            </div>
+                            
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Expense</label>
+                                <select class="form-select" name="expense_name" id="expense_id">
+                                    <option value="">Select an Expense</option>
+                                    
+                                    <% expenses.forEach(expenseItem => { %>
+                                        <option value="<%= expenseItem.expense_name %>" 
+                                            <% if (expenseItem.expense_name === expense.expense_name) { %> 
+                                                selected 
+                                            <% } %>>
+                                            <%= expenseItem.expense_name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                                <span id="expense_error" class="error text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="amount" class="form-label">Amount</label>
+                                <input type="text" placeholder="Enter Amount" class="form-control" id="amount" name="amount" value="<%= expense.expense_amount %>" min="0" step="0.01" />
+                                <span id="amount_error" class="error text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea placeholder="Type here" id="notes" name="notes" class="form-control" rows="4"><%= expense.notes %></textarea>
+                                <span id="notes_error" class="error text-danger"></span>
+                            </div>
+                            
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                        </form>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+
+
+                    </div>
+                </div>
+                <!-- card end// -->
+
+            </div>
+
+        </div>
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+    <script>
+        document.getElementById('add_expenses').addEventListener('click', function () {
+            window.location.href = '/Add_Expence'; 
+        });
+        
+    </script>
+    <script>
+        document.getElementById('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+    
+            document.querySelectorAll('.error').forEach(span => span.innerHTML = '');
+    
+            let isValid = true;
+    
+            const subExpenseName = document.getElementById('subcategory_name').value.trim();
+            console.log(`Sub Expense Name: ${subExpenseName}`);
+    
+            if (subExpenseName === '') {
+                console.log('Sub Expense name is required.');
+                document.getElementById('subcategory_name_error').innerHTML = 'Sub Expense name is required.';
+                isValid = false;
+            }
+    
+            const expenseName = document.getElementById('expense_id').value.trim();
+            console.log(`Expense Name: ${expenseName}`);
+    
+            if (expenseName === '' || expenseName === 'null') {
+                console.log('Expense is required.');
+                document.getElementById('expense_error').innerHTML = 'Expense is required.';
+                isValid = false;
+            }
+    
+            const amount = document.getElementById('amount').value.trim();
+            console.log(`Amount: ${amount}`);
+    
+            // Validate amount: must be a positive number
+            if (amount === '' || isNaN(amount) || parseFloat(amount) <= 0) {
+                console.log('Amount is required and must be a positive number.');
+                document.getElementById('amount_error').innerHTML = 'Amount is required and must be a positive number.';
+                isValid = false;
+            }
+    
+            if (isValid) {
+                const formData = new FormData(this);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+                console.log(`Data:`, data);
+    
+                fetch('/update_subexpense', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.success) {
+                        // If there's an error related to the sub expense name, display it
+                        if (result.message) {
+                            document.getElementById('subcategory_name_error').innerHTML = result.message;
+                        } else {
+                            result.errors.forEach(error => {
+                                if (error.field) {
+                                    document.getElementById(`${error.field}_error`).innerHTML = error.message;
+                                }
+                            });
+                        }
+                    } else {
+                        window.location.href = '/subexpencelist'; // Redirect to the list of sub expenses
+                        this.reset(); // Reset the form fields
+                        document.querySelectorAll('.error').forEach(span => span.innerHTML = ''); // Clear error messages
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                });
+            }
+        });
+    </script>
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+    </body>
+
+    </html>

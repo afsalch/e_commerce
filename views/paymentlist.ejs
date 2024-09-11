@@ -1,0 +1,196 @@
+<%- include('/project/views/layouts/header.ejs') %>
+
+
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Payment Type List</h2>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <div class="col-lg-4 col-md-6 me-auto form-group pull-right">
+                        <input type="text" placeholder="Search..." class="search form-control" />
+                    </div>
+                    <div class="text-end">
+                        <a href="/Add_Payment" class="btn btn-primary btn-sm rounded">Add Payment</a>
+                    </div>
+                </div>
+            </header>
+            <div class="card-body">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover results">
+                            <tbody>
+                                <tr style="background-color: #f7f8f9;">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Payment Type</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Action</th>
+                                    
+                                </tr>
+                                <tr class="warning no-result" style="display: none;">
+                                    <td colspan="6" style="color: red;"><i class="fa fa-warning"></i> No results found</td>
+                                </tr>
+                                <% if (payments.length > 0) { %>
+                                    <% for (let i = 0; i < payments.length; i++) { %>
+                                        <tr>
+                                            <th scope="row"><%= i + 1 %></th>
+                                            <th><%= payments[i].payment_type %></th>
+                                            <% if (payments[i].status === 'Active') { %>
+                                                <th><span class="badge badge-pill badge-soft-success"><%= payments[i].status %></span></th>
+                                            <% } else { %>
+                                                <th><span class="badge badge-pill badge-soft-danger"><%= payments[i].status %></span></th>
+                                            <% } %>
+                                            
+                                            <th>
+                                                <div class="dropdown">
+                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                    <div class="dropdown-menu">
+                                                        <% if (payments[i].status === 'Active') { %>
+                                                            <a href="/toggle_status?id=<%= payments[i].id %>&status=Inactive" class="dropdown-item">
+                                                                Inactive
+                                                            </a>
+                                                        <% } else { %>
+                                                            <a href="/toggle_status?id=<%= payments[i].id %>&status=Active" class="dropdown-item">
+                                                                Active
+                                                            </a>
+                                                        <% } %>
+                                                        <a class="dropdown-item" href="/edit_payment?id=<%= payments[i].id %>">Edit</a>
+                                                        <a class="dropdown-item text-danger" href="#" onclick="confirmDelete(event, '<%= payments[i].id %>')">Delete</a>
+
+                                                    </div>
+                                                </div>
+                                                <!-- dropdown //end -->
+                                            </th>
+                                        </tr>
+                                    <% } %>
+                                <% } else { %>
+                                    <tr>
+                                        <th colspan="6" style="color: red;" class="text-center">No payments created</th>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <!-- card end// -->
+        <div class="pagination-area mt-30 mb-50">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-start">
+                   
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>">
+                                <%= i %>
+                            </a>
+                        </li>
+                    <% } %>
+                   
+                </ul>
+            </nav>
+        </div>
+        
+        
+
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            $(".search").keyup(function () {
+                var searchTerm = $(".search").val().toLowerCase();
+                var listItem = $('.results tbody').children('tr').not(':first'); // Skip the first row (header)
+                
+                $.extend($.expr[':'], {
+                    'containsi': function(elem, i, match, array){
+                        return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+                    }
+                });
+    
+                var hasResults = false;
+                listItem.each(function() {
+                    var text = $(this).text().toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        $(this).attr('visible', 'true');
+                        $(this).show();
+                        hasResults = true;
+                    } else {
+                        if (!$(this).hasClass('no-result')) {
+                            $(this).attr('visible', 'false');
+                            $(this).hide();
+                        }
+                    }
+                });
+    
+                if (!hasResults) {
+                    $('.no-result').show();
+                } else {
+                    $('.no-result').hide();
+                }
+            });
+        });
+    </script>
+
+<script>
+    function confirmDelete(event, payment_id) {
+        event.preventDefault(); // Prevent the default link action
+
+        // Use SweetAlert2 for confirmation
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: 'This action is irreversible. Do you really want to delete this expense?',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#28a745',
+            cancelButtonText: 'No, keep it',
+            confirmButtonText: 'Yes, delete it',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If confirmed, redirect to the delete URL
+                window.location.href = `/delete_payment?id=${payment_id}`;
+            }
+        });
+    }
+</script>
+    
+
+
+
+
+    </body>
+
+    </html>

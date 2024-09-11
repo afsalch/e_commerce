@@ -1,0 +1,195 @@
+
+<%- include('/project/views/layouts/header.ejs') %>
+
+<style>
+    .error {
+        color: red;
+    }
+</style>
+
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Add Customer</h2>
+                            <div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Basic</h4>
+                            </div>
+                            <div class="card-body">
+                                <form id="form">
+                                    <div class="mb-4">
+                                        <label for="customer_name" class="form-label">Customer Name</label>
+                                        <input type="text" placeholder="Enter Customer Name" class="form-control" id="customer_name" name="customer_name" />
+                                        <span id="customer_name_error" class="error"></span> 
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="email" class="form-label">Email Address</label>
+                                        <input type="email" placeholder="Enter Email" class="form-control" id="email" name="email" />
+                                        <span id="email_error" class="error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="phone" class="form-label">Phone Number</label>
+                                        <input type="text" placeholder="Enter Phone Number" class="form-control" id="phone" name="phone" />
+                                        <span id="phone_error" class="error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="address" class="form-label">Address</label>
+                                        <textarea placeholder="Enter Address" id="address" name="address" class="form-control" rows="3"></textarea>
+                                        <span id="address_error" class="error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="notes" class="form-label">Notes</label>
+                                        <textarea placeholder="Type here" id="notes" name="notes" class="form-control" rows="4"></textarea>
+                                        <span id="notes_error" class="error"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="balance" class="form-label">Balance</label>
+                                        <input type="text" placeholder="Enter Balance Amount" class="form-control" id="balance" name="balance" />
+                                        <span id="balance_error" class="error"></span>
+                                    </div>
+                                    <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                                </form>
+                                
+                                
+                                
+                                
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        &copy; Nest - HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">All rights reserved</div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+        <script>
+            document.getElementById('form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the form from submitting
+        
+                // Reset error messages
+                document.getElementById('customer_name_error').innerText = '';
+                document.getElementById('email_error').innerText = '';
+                document.getElementById('phone_error').innerText = '';
+                document.getElementById('address_error').innerText = '';
+                document.getElementById('notes_error').innerText = '';
+                document.getElementById('balance_error').innerText = ''; // Reset balance error
+        
+                // Get input values
+                const customerName = document.getElementById('customer_name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const notes = document.getElementById('notes').value.trim();
+                const balance = document.getElementById('balance').value.trim(); // Get balance value
+        
+                let isValid = true; // To track overall validity
+        
+                // Validation regex
+                const emailRegex = /^[^\s@]+@gmail\.com$/; // Validates Gmail addresses
+                const phoneRegex = /^\d{10}$/; // Validates a 10-digit phone number
+                const usernameRegex = /^[A-Za-z\s]+$/; // Validates names (letters and spaces)
+                const balanceRegex = /^[0-9]+(\.[0-9]{1,2})?$/; // Validates a positive decimal number
+        
+                // Validation checks
+                if (customerName === '') {
+                    document.getElementById('customer_name_error').innerText = 'Customer name is required.';
+                    isValid = false;
+                } else if (!usernameRegex.test(customerName)) {
+                    document.getElementById('customer_name_error').innerText = 'Customer name can only contain letters and spaces.';
+                    isValid = false;
+                }
+        
+                if (email === '') {
+                    document.getElementById('email_error').innerText = 'Email address is required.';
+                    isValid = false;
+                } else if (!emailRegex.test(email)) {
+                    document.getElementById('email_error').innerText = 'Please enter a valid Gmail address.';
+                    isValid = false;
+                }
+        
+                if (phone === '') {
+                    document.getElementById('phone_error').innerText = 'Phone number is required.';
+                    isValid = false;
+                } else if (!phoneRegex.test(phone)) {
+                    document.getElementById('phone_error').innerText = 'Phone number must be exactly 10 digits.';
+                    isValid = false;
+                }
+        
+                if (address === '') {
+                    document.getElementById('address_error').innerText = 'Address is required.';
+                    isValid = false;
+                }
+        
+                if (balance === '') {
+                    
+                } else if (!balanceRegex.test(balance)) {
+                    document.getElementById('balance_error').innerText = 'Please enter a valid amount (positive decimal).';
+                    isValid = false;
+                }
+        
+                if (isValid) {
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData.entries());
+        
+                    fetch('/add_customer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            window.location.href = '/customerslist'; // Redirect on success
+                        } else {
+                            // If the email already exists, show the error message
+                            if (result.message.includes('Email already exists')) {
+                                document.getElementById('email_error').innerText = result.message; 
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again later.'); 
+                    });
+                }
+            });
+        </script>
+        
+        
+        
+        
+        
+            
+            
+    </body>
+</html>

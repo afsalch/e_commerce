@@ -1,0 +1,343 @@
+<%- include('/project/views/layouts/header.ejs') %>
+
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add Transaction</h2>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="transaction_form">
+                            <div class="mb-4">
+                                <label for="transaction_date" class="form-label">Transaction Date</label>
+                                <input type="date" class="form-control" id="transaction_date" name="transaction_date" />
+                                <span id="transaction_date_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <div class="mb-4">
+                                <label for="customer_id" class="form-label">Customer</label>
+                                <select class="form-select" id="customer_id" name="customer_id">
+                                    <option value="">Select a customer</option>
+                                    <% customers.forEach(customer => { %>
+                                        <option value="<%= customer.customer_name %>">
+                                            <%= customer.customer_name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                                <span id="customer_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <% if (customers.length === 0) { %>
+                                <!-- Show Add Customer button when there are no customers -->
+                                <button type="button" class="btn btn-md rounded font-sm hover-up" id="add_customer_btn">Add Customer</button>
+                            <% } %>
+                               
+                        
+                            <div class="mb-4">
+                                <label for="amount" class="form-label">Amount</label>
+                                <input type="text" class="form-control" id="amount" name="amount" min="0.01" step="0.01" placeholder="Enter amount" />
+                                <span id="amount_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <!-- Margin Field -->
+                            <div class="mb-4">
+                                <label for="margin" class="form-label">Margin</label>
+                                <input type="text" class="form-control" id="margin" name="margin" placeholder="Enter margin" />
+                                <span id="margin_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <div class="mb-4">
+                                <label for="category_id" class="form-label">Category</label>
+                                <select class="form-select" id="category_id" name="category_id">
+                                    <option value="">Select a category</option>
+                                    <% for (let category in groupedCategories) { %>
+                                        <option value="<%= groupedCategories[category].category_name %>">
+                                            <%= groupedCategories[category].category_name %>
+                                        </option>
+                                    <% } %>
+                                </select>
+                                <span id="category_error" class="error text-danger"></span>
+                            </div>
+
+                            <% if (categoryLength === 0) { %>
+
+                                <button type="button" class="btn btn-md rounded font-sm hover-up" id="add_category_btn">Add Category</button>
+
+                            <% } %>
+
+                        
+                            <div class="mb-4" id="subcategory_div" style="display: none;">
+                                <label for="subcategory_id" class="form-label">Subcategory</label>
+                                <select class="form-select" id="subcategory_id" name="subcategory_id">
+                                    <option value="">Select a subcategory</option>
+                                </select>
+                                <span id="subcategory_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <div class="mb-4">
+                                <label for="payment_method" class="form-label">Payment Method</label>
+                                <select class="form-select" id="payment_method" name="payment_method">
+                                    <option value="">Select a method</option>
+                                    <% paymentTypes.forEach(paymentType => { %>
+                                        <option value="<%= paymentType.payment_type %>">
+                                            <%= paymentType.payment_type %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                                <span id="payment_method_error" class="error text-danger"></span>
+                            </div>
+
+                            <% if (paymentTypes.length === 0) { %>
+                                <!-- Show Add Customer button when there are no customers -->
+                                <button type="button" class="btn btn-md rounded font-sm hover-up" id="add_payment_type_btn">Add Payment type</button>
+                            <% } %>
+                        
+                            <div class="mb-4">
+                                <label for="transaction_notes" class="form-label">Notes</label>
+                                <textarea placeholder="Type here" id="transaction_notes" name="notes" class="form-control" rows="4"></textarea>
+                                <span id="notes_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                        </form>
+                        
+                       
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+            <!-- card end// -->
+
+        </div>
+
+        </div>
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script>
+        document.getElementById('add_customer_btn').addEventListener('click', function () {
+            window.location.href = '/Add_Customer'; 
+        });
+        document.getElementById('add_category_btn').addEventListener('click', function () {
+            console.log('clicked');
+            window.location.href = '/Add_Category'; 
+        });
+        document.getElementById('add_payment_type_btn').addEventListener('click', function () {
+            window.location.href = '/Add_Payment'; 
+        });
+    </script>
+
+
+    <script>
+        document.getElementById('transaction_form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent form submission for validation
+            let isValid = true;
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(function (errorElement) {
+                errorElement.innerHTML = '';
+            });
+
+            // Validate Transaction Date
+            const transactionDate = document.getElementById('transaction_date').value.trim();
+            if (!transactionDate) {
+                document.getElementById('transaction_date_error').innerHTML = 'Transaction date is required.';
+                isValid = false;
+            }
+
+            // Validate Customer
+            const customerId = document.getElementById('customer_id').value.trim();
+            if (!customerId) {
+                document.getElementById('customer_error').innerHTML = 'Please select a customer.';
+                isValid = false;
+            }
+
+            // Validate Amount
+            const amount = document.getElementById('amount').value.trim();
+            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+                document.getElementById('amount_error').innerHTML = 'Please enter a valid amount greater than 0.';
+                isValid = false;
+            }
+
+            // Validate Category
+            const categoryId = document.getElementById('category_id').value.trim();
+            if (!categoryId) {
+                document.getElementById('category_error').innerHTML = 'Please select a category.';
+                isValid = false;
+            }
+
+            // Validate Subcategory
+            const subcategoryId = document.getElementById('subcategory_id').value;
+            if (!subcategoryId) {
+                document.getElementById('subcategory_error').innerHTML = 'Please select a subcategory.';
+                isValid = false;
+            }
+
+            // Validate Payment Method
+            const paymentMethod = document.getElementById('payment_method').value.trim();
+            if (!paymentMethod) {
+                document.getElementById('payment_method_error').innerHTML = 'Please select a payment method.';
+                isValid = false;
+            }
+
+            // Validate Margin
+            const margin = document.getElementById('margin').value.trim();
+            if (!margin || isNaN(margin) || parseFloat(margin) <= 0) {
+                document.getElementById('margin_error').innerHTML = 'Please enter a valid margin greater than 0.';
+                isValid = false;
+            }
+
+            // Validate Notes (Optional)
+            const notes = document.getElementById('transaction_notes').value.trim();
+            if (notes.length > 255) {
+                document.getElementById('notes_error').innerHTML = 'Notes should not exceed 255 characters.';
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Prepare data for submission
+                const transactionData = {
+                    transaction_date: transactionDate,
+                    customer_id: customerId, // customer_name
+                    amount: parseFloat(amount),
+                    category_name: categoryId,
+                    subcategory_name: subcategoryId,
+                    payment_method: paymentMethod, // payment_type
+                    margin: parseFloat(margin), // Add margin to the data
+                    notes: notes
+                };
+
+                // Send a request to insert the transaction
+                fetch('/insert-transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transactionData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '/transactionlist';
+                        } else {
+                            alert('Error adding transaction: ' + data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error inserting transaction:', error));
+            }
+        });
+
+        document.getElementById('category_id').addEventListener('change', function () {
+            const categoryName = this.value;
+            const subcategoryDropdown = document.getElementById('subcategory_id');
+            const subcategoryDiv = document.getElementById('subcategory_div');
+
+            subcategoryDropdown.innerHTML = '<option value="">Select a subcategory</option>';
+            subcategoryDropdown.disabled = true;
+
+            if (categoryName) {
+                fetch('/fetch-subcategories', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ category_name: categoryName })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Server Response:', data);
+
+                        if (data.success && data.subcategories.length > 0) {
+
+                            data.subcategories.forEach(subcategory => {
+                                const option = document.createElement('option');
+                                option.value = subcategory.trim();
+                                option.textContent = subcategory.trim();
+                                subcategoryDropdown.appendChild(option);
+                            });
+
+                            document.querySelectorAll('#subcategory_id option').forEach(option => {
+
+                            });
+
+                            subcategoryDropdown.disabled = false;
+                            subcategoryDiv.style.display = 'block';
+                        } else {
+                            subcategoryDiv.style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error fetching subcategories:', error));
+            } else {
+                subcategoryDiv.style.display = 'none';
+            }
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </body>
+
+    </html>

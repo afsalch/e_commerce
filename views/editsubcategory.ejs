@@ -1,0 +1,165 @@
+<%- include('/project/views/layouts/header.ejs') %>
+
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add Subcategory</h2>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="form">
+                            <input type="hidden" class="form-control" id="subcategory_id" name="subcategory_id" value="<%= subcategory.id %>" />
+                            <div class="mb-4">
+                                <label for="subcategory_name" class="form-label">Subcategory Name</label>
+                                <input type="text" placeholder="Enter Subcategory Name" class="form-control" id="subcategory_name" name="subcategory_name" value="<%= subcategory.subcategory_name %>" />
+                                <span id="subcategory_name_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category_name" id="category_id">
+                                    <option value="">Select a category</option>
+                                    <% categories.forEach(category => { %>
+                                        <option value="<%= category.category_name %>" <%= category.category_name === subcategory.category_name ? 'selected' : '' %>><%= category.category_name %></option>
+                                    <% }); %>
+                                </select>
+                                <span id="category_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <div class="mb-4">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea placeholder="Type here" id="notes" name="notes" class="form-control" rows="4"><%= subcategory.notes %></textarea>
+                                <span id="notes_error" class="error text-danger"></span>
+                            </div>
+                        
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Submit</button>
+                        </form>
+                        
+                        
+                        
+                        
+                        
+                        
+
+
+                    </div>
+                </div>
+                <!-- card end// -->
+
+            </div>
+
+        </div>
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+    </main>
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script>
+        document.getElementById('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+    
+            document.querySelectorAll('.error').forEach(span => span.innerHTML = '');
+    
+            let isValid = true;
+    
+            const subcategoryName = document.getElementById('subcategory_name').value.trim();
+            console.log(`Subcategory Name: ${subcategoryName}`);
+    
+            if (subcategoryName === '') {
+                console.log('Subcategory name is required.');
+                document.getElementById('subcategory_name_error').innerHTML = 'Subcategory name is required.';
+                isValid = false;
+            }
+    
+            const categoryName = document.getElementById('category_id').value.trim();
+            console.log(`Category Name: ${categoryName}`);
+    
+            if (categoryName === '' || categoryName === 'null') {
+                console.log('Category is required.');
+                document.getElementById('category_error').innerHTML = 'Category is required.';
+                isValid = false;
+            }
+    
+            if (isValid) {
+                const formData = new FormData(this);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+                console.log(`Data:`, data);
+    
+                fetch('/edit_subcategory', {  // Use the correct endpoint for updating the subcategory
+                    method: 'PUT',  // Change the method to PUT for update
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.success) {
+                        // Display validation errors
+                        document.getElementById('subcategory_name_error').innerHTML = result.message || 'An error occurred.';
+                    } else {
+                        // Redirect on success
+                        window.location.href = '/subcategorylist';
+                        this.reset();
+                        document.querySelectorAll('.error').forEach(span => span.innerHTML = '');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                });
+            }
+        });
+    </script>
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+    </body>
+
+    </html>

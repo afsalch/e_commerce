@@ -57,38 +57,41 @@ const login = async (req, res) => {
 const dashboardload = async (req, res) => {
   if (req.session.AdminId) {
     try {
-      // Fetch all transaction amounts
+      // Fetch all transaction margins
       const [transactionResult] = await connection.promise().query(`
-        SELECT amount FROM Transactions
+        SELECT margin FROM Transactions
       `);
 
-      console.log(`transactionResult: ${JSON.stringify(transactionResult)}`);
 
-      // Calculate total transaction amount
-      const totalTransactionAmount = transactionResult.reduce((acc, row) => {
-        const amount = parseFloat(row.amount);
-        return acc + (isNaN(amount) ? 0 : amount);
+      // Calculate total transaction margin
+      const totalTransactionMargin = transactionResult.reduce((acc, row) => {
+        const margin = parseFloat(row.margin);
+        return acc + (isNaN(margin) ? 0 : margin); 
       }, 0);
 
-      console.log(`totalTransactionAmount ${totalTransactionAmount}`);
+      // If no transactions, set totalTransactionMargin to 0
+      const finalTransactionMargin = isNaN(totalTransactionMargin) ? 0 : totalTransactionMargin;
+
 
       // Fetch all expense amounts
       const [expenseResult] = await connection.promise().query(`
         SELECT expense_amount FROM Expenses
       `);
 
-      console.log(`expenseResult: ${JSON.stringify(expenseResult)}`);
 
       // Calculate total expense amount
       const totalExpenseAmount = expenseResult.reduce((acc, row) => {
         const expenseAmount = parseFloat(row.expense_amount);
-        return acc + (isNaN(expenseAmount) ? 0 : expenseAmount);
+        return acc + (isNaN(expenseAmount) ? 0 : expenseAmount); 
       }, 0);
 
-      console.log(`totalExpenseAmount ${totalExpenseAmount}`);
+      // If no expenses, set totalExpenseAmount to 0
+      const finalExpenseAmount = isNaN(totalExpenseAmount) ? 0 : totalExpenseAmount;
 
-      // Calculate the net amount
-      const netAmount = totalTransactionAmount - totalExpenseAmount;
+
+      // Calculate the net amount (totalTransactionMargin - totalExpenseAmount)
+      const netAmount = finalTransactionMargin - finalExpenseAmount;
+
 
       // Render the dashboard with the calculated netAmount
       res.render("dashboard", { netAmount });

@@ -30,6 +30,7 @@
                                     <th scope="col">SL No</th>
                                     <th scope="col">sub-expence</th>
                                     <th scope="col">expence</th>
+                                    <th scope="col">Date</th>
                                     <th scope="col">Amount</th>
                                     <th scope="col">Action</th>
                                 </tr>
@@ -46,6 +47,8 @@
                                                 <% }); %>
                                             </th>
                                             <th><%= expense.expense_name %></th>
+                                            <th><%= expense.created_at ? expense.created_at.toISOString().split('T')[0] : 'N/A' %></th>
+
                                             <th><%= expense.expense_amount %></th>
                                            
                                             <th>
@@ -55,7 +58,7 @@
                                                     </a>
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item" href="/edit-subexpense?id=<%= expense.expense_id %>">Edit</a>
-                                                        <a class="dropdown-item text-danger" href="#" onclick="confirmDelete(event, '<%= expense.subexpenses.join(', ') %>')">Delete</a>
+                                                        <a class="dropdown-item text-danger" href="#" onclick="confirmDelete(event, '<%= expense.expense_id %>')">Delete</a>
                                                     </div>
                                                 </div>
                                             </th>
@@ -157,9 +160,8 @@
     </script>
 
 <script>
-    function confirmDelete(event, subexpense_name) {
-        console.log('clicked');
-        event.preventDefault(); // Prevent the default link action
+    function confirmDelete(event, expense_id) {
+        event.preventDefault(); 
 
         // Use SweetAlert2 for confirmation
         Swal.fire({
@@ -174,7 +176,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 // If confirmed, redirect to the delete URL
-                window.location.href = `/delete-subexpence?id=${subexpense_name}`;
+                window.location.href = `/delete-subexpence?id=${expense_id}`;
             }
         });
     }

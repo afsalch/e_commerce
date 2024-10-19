@@ -49,6 +49,12 @@
                                 <input type="text" class="form-control" id="amount" name="amount" min="0.01" step="0.01" placeholder="Enter amount" value="<%= transaction.amount %>" />
                                 <span id="amount_error" class="error text-danger"></span>
                             </div>
+
+                            <div class="mb-4">
+                                <label for="margin" class="form-label">Margin</label>
+                                <input type="text" class="form-control" id="margin" name="margin" placeholder="Enter margin" value="<%= transaction.margin %>"/>
+                                <span id="margin_error" class="error text-danger"></span>
+                            </div>
                         
                             <div class="mb-4">
                                 <label for="category_name" class="form-label">Category</label>
@@ -167,6 +173,13 @@
             isValid = false;
         }
 
+
+        const margin = document.getElementById('margin').value.trim();
+        if (!amount || isNaN(margin) || parseFloat(margin) <= 0) {
+            document.getElementById('margin_error').innerHTML = 'Please enter a valid amount greater than 0.';
+            isValid = false;
+        }
+
         // Validate Category
         const categoryName = document.getElementById('category_name').value.trim();
         if (!categoryName) {
@@ -204,6 +217,7 @@
                 transaction_date: transactionDate,
                 customer_name: customerName,
                 amount: parseFloat(amount),
+                margin: parseFloat(margin),
                 category_name: categoryName,
                 subcategory_name: subcategoryName,
                 payment_method: paymentMethod,

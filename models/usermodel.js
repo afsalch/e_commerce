@@ -82,14 +82,17 @@ CREATE TABLE IF NOT EXISTS Transactions (
 const createExpenseTableQuery = `
 CREATE TABLE IF NOT EXISTS Expenses (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  expense_name VARCHAR(255) NOT NULL,
-  subexpense_name VARCHAR(255),
+  category_name VARCHAR(255) NOT NULL,
+  subcategory_name VARCHAR(255),
   expense_amount DECIMAL(10, 2),
   notes TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 `;
+
+
+
 
 // Function to create all the tables
 async function createTables() {

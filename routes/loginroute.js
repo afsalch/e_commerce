@@ -8,7 +8,6 @@ const paymentcontroller = require('../controllers/paymentcontroller')
 const customercontroller = require('../controllers/customercontroller')
 const categorycontroller = require('../controllers/categorycontroller')
 const transactioncontroller = require('../controllers/transactioncontroller')
-const expencecontroller = require('../controllers/expencecontroller')
 const subexpencecontrller = require('../controllers/subexpencecontrller')
 
 // login routes
@@ -147,19 +146,7 @@ route.get('/delete-transaction',authmiddleware,transactioncontroller.deletetrans
 
 route.get('/download_transaction',authmiddleware, transactioncontroller.downloadtransaction)
 
-// expences route
 
-route.get('/expencelist',authmiddleware, expencecontroller.expencelist)
-
-route.get('/Add_Expence',authmiddleware, expencecontroller.AddExpence)
-
-route.post('/insert-expense',authmiddleware, expencecontroller.insertexpense)
-
-route.get('/edit-expense',authmiddleware, expencecontroller.editexpense)
-
-route.put('/update_expense',authmiddleware, expencecontroller.updateExpense)
-
-route.get('/delete-expense',authmiddleware, expencecontroller.deleteexpense)
 
 // subexpence rotes
 

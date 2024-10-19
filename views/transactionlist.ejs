@@ -31,6 +31,7 @@
                                     <th scope="col">Transaction Date</th>
                                     <th scope="col">Customer Name</th>
                                     <th scope="col">Amount</th>
+                                    <th scope="col">Margin</th>
                                     <th scope="col">Category</th>
                                     <th scope="col">Subcategory</th>
                                     <th scope="col">Payment Method</th>
@@ -46,6 +47,7 @@
                                             <th><%= transaction.transaction_date.toISOString().split('T')[0] %></th>
                                             <th><%= transaction.customer_name %></th>
                                             <th><%= transaction.amount %></th>
+                                            <th><%= transaction.margin %></th>
                                             <th><%= transaction.category_name %></th>
                                             <th><%= transaction.subcategory_name %></th>
                                             <th><%= transaction.payment_method %></th>
